@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>control</title>
-
+  <script type="text/javascript" src="../../../sources/jscharts.js"></script>
 <style>
 #header {
     background-color:#08316F;
@@ -12,7 +12,7 @@
 }
 #nav {
     line-height:30px;
-    height:600px;
+    height:700px;
     width:40%;
     float:left;
     padding:5px;	      
@@ -21,7 +21,7 @@
 #section {
     width:40%;
     float:left;
-	height:600px;
+	height:700px;
 	background-color:#eeeeee;
     padding:10px;	 	
 	text-align:center;	
@@ -29,7 +29,7 @@
 #alert {
     width:15%;
     float:left;
-	height:600px;
+	height:700px;
 	background-color:#FFFFF0;
     padding:10px;	 	
 	text-align:center;	
@@ -47,7 +47,7 @@
 <body>
 
 <div id="header">
-<img src="./p2.gif" width="628" height="100" /><h2 style="text-align:center">双容水箱智能化控制系统</h2>
+<img src="./p2.gif" width="628" height="100" /><h2 style="text-align:center">自动化综合实验第六组：双容水箱智能化控制系统</h2>
 </div>
 
 <div id="nav">
@@ -55,19 +55,17 @@
 <canvas id="myCanvas" width="400" height="500" >
 Your browser does not support the canvas element.
 </canvas>
+<p id="demo">My First Paragraph.</p>
 
 
 
 <script type="text/javascript">
-
 var c=document.getElementById("myCanvas");
 var cxt=c.getContext("2d");
-
 cxt.fillStyle="#E0E0E0";
 cxt.fillRect(100,440,150,50);
 cxt.fillStyle="#AEEFFF";
 cxt.fillRect(100,450,150,40);
-
 cxt.moveTo(150,400);
 cxt.lineTo(150,50);
 cxt.lineTo(225,50);
@@ -84,18 +82,15 @@ cxt.beginPath();
 cxt.arc(150,400,15,0,Math.PI*2,true);
 cxt.closePath();
 cxt.fill();
-
 cxt.moveTo(150,385);
 cxt.lineTo(160,409);
 cxt.moveTo(150,385);
 cxt.lineTo(140,409);
-
 cxt.moveTo(150,415);
 cxt.lineTo(150,450);
 cxt.moveTo(225,415);
 cxt.lineTo(225,435);
 cxt.stroke();
-
 var cxt1=c.getContext("2d");
 cxt1.fillStyle="#E0E0E0";
 cxt1.fillRect(200,275,50,150);
@@ -105,7 +100,6 @@ cxt1.fillStyle="#E0E0E0";
 cxt1.fillRect(200,100,50,150);
 cxt1.fillStyle="#AEEFFF";
 cxt1.fillRect(200,200,50,50);
-
 var i=0
 var height=0
 var height1=0
@@ -113,20 +107,20 @@ function ShowMsg()
 {
 i=i+1
 cxt1.fillStyle="#E0E0E0";
-cxt1.fillRect(200,375-height1,50,50+height1);
+cxt1.fillRect(200,275,50,150);
 cxt1.fillStyle="#E0E0E0";
-cxt1.fillRect(200,200-height,50,50+height);
-height=0
-height1=0
-height=30*Math.sin(10*i*Math.PI/180);
-height1=30*Math.cos(10*i*Math.PI/180);
+cxt1.fillRect(200,100,50,150);
+height=30*Math.sin(3*i*Math.PI/180);
+height1=30*Math.cos(3*i*Math.PI/180);
 cxt1.fillStyle="#AEEFFF";
 cxt1.fillRect(200,375-height1,50,50+height1);
 cxt1.fillStyle="#AEEFFF";
 cxt1.fillRect(200,200-height,50,50+height);
+l1=(50+height)/6
+l2=(50+height1)/6
+document.getElementById("demo").innerHTML="上液位："+l1.toPrecision(4)+"cm&nbsp&nbsp下液位："+l2.toPrecision(4)+"cm&nbsp&nbsp泵功率："+l1.toPrecision(4)+"%      ";
 }
 setInterval("ShowMsg()",50);
-
 
 </script>
 
@@ -142,7 +136,7 @@ setInterval("ShowMsg()",50);
 
 </div>
 <div id="footer">
-自动化综合实验 第六组
+浙江大学控制科学与工程学院
 </div>
 
 
