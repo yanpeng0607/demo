@@ -3,14 +3,14 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>control</title>
-  <script type="text/javascript" src="../../../sources/jscharts.js"></script>
+
 <style>
 #header {
     background-color:#08316F;
     color:white;
     padding:5px;
 }
-#nav {
+#graph {
     line-height:30px;
     height:700px;
     width:40%;
@@ -18,18 +18,18 @@
     padding:5px;	      
 	text-align:center;
 }
-#section {
-    width:40%;
+#chart {
+    width:55%;
     float:left;
-	height:700px;
+	height:550px;
 	background-color:#eeeeee;
     padding:10px;	 	
 	text-align:center;	
 }
 #alert {
-    width:15%;
+    width:55%;
     float:left;
-	height:700px;
+	height:150px;
 	background-color:#FFFFF0;
     padding:10px;	 	
 	text-align:center;	
@@ -42,7 +42,15 @@
    padding:5px;	 	 
 }
 </style>
+
+<title>Flot动态曲线</title>
+<script type="text/javascript" src=".../jquery-3.1.1.min.js"></script>
+<script language="javascript" type="text/javascript" src=".../jquery.flot.js"></script>
+
+
+
 </head>
+
 
 <body>
 
@@ -50,13 +58,12 @@
 <img src="./p2.gif" width="628" height="100" /><h2 style="text-align:center">自动化综合实验第六组：双容水箱智能化控制系统</h2>
 </div>
 
-<div id="nav">
+<div id="graph">
 <h4>模拟实物监控画面</h4>
 <canvas id="myCanvas" width="400" height="500" >
 Your browser does not support the canvas element.
 </canvas>
 <p id="demo">My First Paragraph.</p>
-
 
 
 <script type="text/javascript">
@@ -100,18 +107,24 @@ cxt1.fillStyle="#E0E0E0";
 cxt1.fillRect(200,100,50,150);
 cxt1.fillStyle="#AEEFFF";
 cxt1.fillRect(200,200,50,50);
-var i=0
-var height=0
-var height1=0
+i=0;
+is=20;
+height=0;
+height1=0;
+l1=0;
+l2=0;
+
 function ShowMsg()
 {
 i=i+1
+if (i%1000==0){ i=0;}
 cxt1.fillStyle="#E0E0E0";
 cxt1.fillRect(200,275,50,150);
 cxt1.fillStyle="#E0E0E0";
 cxt1.fillRect(200,100,50,150);
-height=30*Math.sin(3*i*Math.PI/180);
+height=30*Math.sin(3*i*Math.PI/180)*Math.pow( Math.E,-0.01*i)+30*Math.pow( Math.E,-0.01*i);
 height1=30*Math.cos(3*i*Math.PI/180);
+
 cxt1.fillStyle="#AEEFFF";
 cxt1.fillRect(200,375-height1,50,50+height1);
 cxt1.fillStyle="#AEEFFF";
@@ -119,21 +132,108 @@ cxt1.fillRect(200,200-height,50,50+height);
 l1=(50+height)/6
 l2=(50+height1)/6
 document.getElementById("demo").innerHTML="上液位："+l1.toPrecision(4)+"cm&nbsp&nbsp下液位："+l2.toPrecision(4)+"cm&nbsp&nbsp泵功率："+l1.toPrecision(4)+"%      ";
+
+if (l1>10) document.getElementById("a1").innerHTML="上液位超限报警：超限警告！";
+else document.getElementById("a1").innerHTML="上液位超限报警：运行正常。";
+if (l2>10) document.getElementById("a2").innerHTML="下液位超限报警：超限警告！";
+else document.getElementById("a2").innerHTML="下液位超限报警：运行正常。";
 }
-setInterval("ShowMsg()",50);
+
+
+setInterval("ShowMsg()",100);
+
+
+
+
+
+
+
+$(function () {
+    // 要绘制的数据和数据的数据点数
+    var data1 = [], totalPoints = 300;
+	var data2 = [], totalPoints = 300;
+	// 获得一些随机数据
+    function getData1() {
+        if (data1.length > 0)
+            data1 = data1.slice(1);
+        while (data1.length < totalPoints) {
+            var prev = data1.length > 0 ? data1[data1.length - 1] : 50;
+            var y = l1
+            if (y < 0)
+                y = 0;
+            if (y > 25)
+                y = 25;
+            data1.push(y);
+        }
+        var res = [];
+        for (var i = 0; i < data1.length; ++i)
+            res.push([i, data1[i]])
+        return res;
+    }
+	function getData2() {
+        if (data2.length > 0)
+            data2 = data2.slice(1);
+        while (data2.length < totalPoints) {
+            var prev = data2.length > 0 ? data2[data2.length - 1] : 50;
+            var y = l2
+            if (y < 0)
+                y = 0;
+            if (y > 25)
+                y = 25;
+            data2.push(y);
+        }
+        var res = [];
+        for (var i = 0; i < data2.length; ++i)
+            res.push([i, data2[i]])
+        return res;
+    }
+
+
+    // 设置绘图参数
+    var options = {
+        series: { shadowSize: 0 }, // 绘制线的阴影，不绘制设置 0
+        yaxis: { min: 0, max: 25 }, // Y 轴的最大值最小值
+        xaxis: { show: false } // 不显示 X 轴
+    };
+	// 绘图对象 参数为：绘制地点、数据、属性
+    var plot1 = $.plot($("#placeholder1"), [ getData1() ], options);
+	var plot2 = $.plot($("#placeholder2"), [ getData2() ], options);
+    function update() {
+		// 要实现动态绘图，只需重新设置其数据即可
+        plot1.setData([ getData1() ]); // 设置数据
+        // 轴线不改变，不用调用 plot.setupGrid()
+        plot1.draw();
+		plot2.setData([ getData2() ]); // 设置数据
+        // 轴线不改变，不用调用 plot.setupGrid()
+        plot2.draw();
+		// 设置调用
+        setTimeout(update,100);
+    }
+	// 加载调用
+    update();
+});
+
+
+
 
 </script>
 
-
 </div>
 
-<div id="section">
+
+<div id="chart">
 <h4>趋势画面</h4>
-
+<p>上液位趋势</p>
+<div id="placeholder1" style="width:700px;height:200px;align:center;"></div>
+<p>下液位趋势</p>
+<div id="placeholder2" style="width:700px;height:200px;align:center;"></div>
 </div>
+
+
 <div id="alert">
 <h4>报警画面</h4>
-
+<p id="a1">My First Paragraph.</p>
+<p id="a2">My First Paragraph.</p>
 </div>
 <div id="footer">
 浙江大学控制科学与工程学院
